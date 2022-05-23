@@ -1,8 +1,6 @@
 Config = {}
 
-Config.keys = {
-    aceptar = 317
-}
+Config.aceptar = 317
 
 Config.codes = {
     ['entorno'] = {
