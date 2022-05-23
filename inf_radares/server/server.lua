@@ -33,6 +33,6 @@ AddEventHandler('radares:multa', function(source, velocity, min, plate)
 end)
 
 RegisterServerEvent('radares:aviso')
-AddEventHandler('radares:aviso', function(source, model, street, primary, velocity)
-    exports.inf_entornos:vel(source, model, street, primary, velocity)
+AddEventHandler('radares:aviso', function(source, veh, velocity)
+    exports.inf_entornos:vel(source, veh, velocity)
 end)
