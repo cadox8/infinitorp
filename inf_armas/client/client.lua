@@ -51,13 +51,12 @@ Citizen.CreateThread(function()
 		end
 
 		for name, attached_object in pairs(attached_weapons) do
-
 			if GetSelectedPedWeapon(me) ==  attached_object.hash or not HasPedGotWeapon(me, attached_object.hash, false) then
 				DeleteObject(attached_object.handle)
 				attached_weapons[name] = nil
 			end
 		end
-		Wait(0)
+		Citizen.Wait(500)
 	end
 end)
 
