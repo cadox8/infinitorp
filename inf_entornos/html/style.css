@@ -1,0 +1,102 @@
+@font-face {
+    font-family: 'SegoeUI';
+    src: url('/fonts/SegoeUI.ttf');
+}
+
+* {
+    color: white;
+    font-family: "Segoe UI", "Segoe UI Symbol", "Segoe UI Emoji",  Arial, sans-serif;
+}
+.alerts-wrapper {
+    display: none;
+    float: right;
+}
+
+.content {
+    padding: 3% 2% 0% 3%;
+}
+
+.fas {
+    padding-right:8px;
+}
+#code {
+    margin-right: 2px;
+    letter-spacing: 0.5px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding:2px;
+    background: rgba(209, 21, 99, 1.0);
+    float: left;
+    border-radius: 5px;
+}
+
+#marker {
+    float: right;
+    padding-right: 5%;
+    padding-top: 3%;
+    font-size: xx-large;
+}
+
+#alert-name {
+    letter-spacing: 0.2px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-left:1%;
+    float: left;
+}
+
+#alert-info {
+    font-size: 0.8rem;
+    font-weight: 700;
+    overflow-wrap: break-word;
+    margin-top: 28px;
+}
+
+.alerts {
+    width: 375px;
+    height: 75px;
+    color: white;
+}
+
+.alerts.police {
+    box-shadow: -5px 0px 0px 0px rgb(0, 183, 255) inset;
+    background: rgba(17, 84, 160, 0.75);
+}
+
+.template, .notification {
+    display: none;
+}
+
+.notif-container {
+    width: 20%; /* was 15% */
+    position: absolute;
+    right: 1%; /* was 15% */
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+}
+
+.notification {
+    width: 375px;
+    height: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 5px;
+    font: caption;
+    font-size: 12px;
+    font-weight: bold;
+
+}
+
+.move {
+    -webkit-transition: all .2s ease-in-out;
+    -moz-transition: all .2s ease-in-out;
+    -ms-transition: all .2s ease-in-out;
+    -o-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+}
+
+.police {
+    box-shadow: -5px 0px 0px 0px rgb(0, 183, 255) inset;
+    background: rgba(17, 84, 160, 0.75);
+}
