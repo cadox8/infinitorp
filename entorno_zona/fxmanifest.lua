@@ -3,7 +3,7 @@ game 'gta5'
 
 name 'Entornos Zona'
 author 'cadox8'
-version '1.0.0'
+version '1.2.0'
 
 server_scripts {
   '@mysql-async/lib/MySQL.lua',
