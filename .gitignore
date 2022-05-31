@@ -1,7 +1,10 @@
 # Compiled Lua sources
 luac.out
 
+# Custom
 .idea
+inf_mdt/web/node_modules
+inf_mdt/web/build
 
 # luarocks build files
 *.src.rock

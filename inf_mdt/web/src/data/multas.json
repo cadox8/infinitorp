@@ -1,0 +1,17 @@
+{
+  "art": [
+    {
+      "id": 1,
+      "nombre": "Artículo 1",
+      "icon": "fa-car"
+    }
+  ],
+  "multas": [
+    {
+      "nombre": "Art. 1.01 - Mal uso del claxon",
+      "sancion": 250,
+      "carcel": 0,
+      "art": 1
+    }
+  ]
+}
