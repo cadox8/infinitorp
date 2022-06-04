@@ -35,11 +35,10 @@ AddEventHandler('inf_entornos:socorro', function(source, street, msg)
 end)
 
 -- Exports
-exports('vel', function(source, model, street, primary, velocity)
-    primary = Config.colors[tostring(primary)]
-    local data = 'Vehiculo: ' .. model .. '<br> Color: ' .. primary .. '<br> A: ' .. velocity .. 'km/h'
+exports('vel', function(source, veh, velocity)
+    local data = 'Vehiculo: ' .. veh.model .. '<br> Matrícula: ' .. veh.plate .. '<br> Color: ' .. veh.color .. '<br> A: ' .. velocity .. 'km/h'
 
-    notification(source, Config.codes['speed'].cod, Config.codes['speed'].title, Config.codes['speed'].blip, data, street)
+    notification(source, Config.codes['speed'].cod, Config.codes['speed'].title, Config.codes['speed'].blip, data, veh.street)
 end)
 
 exports('drug', function(source, msg, loc)
