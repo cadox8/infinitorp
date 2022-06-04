@@ -4,7 +4,7 @@ game 'gta5'
 
 name 'Entornos'
 author 'cadox8'
-version '2.3.0'
+version '3.0.0'
 
 ui_page 'html/ui.html'
 
