@@ -1,14 +1,14 @@
 ESX = nil
 LatestBlip = nil
 
-TriggerEvent('chat:addSuggestion', '/entorno', 'Manda un aviso al LSPD', {
+TriggerEvent('chat:addSuggestion', '/entorno', 'Manda un aviso a la LSPD', {
     { name = 'Aviso', help = "Escribe tu entorno" }
 })
 TriggerEvent('chat:addSuggestion', '/socorro', 'Manda un aviso a los EMS (LSFD)', {
     { name = 'Aviso', help = "Escribe tu aviso" }
 })
-TriggerEvent('chat:addSuggestion', '/forzar', 'Manda un entorno al LSPD', {})
-TriggerEvent('chat:addSuggestion', '/vel', 'Manda un entorno de velocidad al LSPD', {})
+TriggerEvent('chat:addSuggestion', '/forzar', 'Manda un entorno a la LSPD', {})
+TriggerEvent('chat:addSuggestion', '/vel', 'Manda un entorno de velocidad a la LSPD', {})
 
 Citizen.CreateThread(function()
     while ESX == nil do
@@ -22,13 +22,14 @@ end)
 Citizen.CreateThread(function ()
     while true do
         if LatestBlip ~= nil then
-            if IsControlPressed(0, Config.keys.aceptar) then
+            if IsControlPressed(0, Config.aceptar) then
                 SetWaypointOff()
                 SetNewWaypoint(LatestBlip.x, LatestBlip.y)
                 LatestBlip = nil
             end
+        else
+            Citizen.Wait(100)
         end
-        Citizen.Wait(100)
     end
 end)
 
@@ -45,25 +46,29 @@ function vehicleData()
 
     local primary, secondary = GetVehicleColours(vehicle)
 
+    local color = Config.colors[tostring(primary)] .. ' nacarado ' .. Config.colors[tostring(secondary)]
+
+    -- Posición de carretera
     if crossingRoad ~= 0 then
         street = GetStreetNameFromHashKey(streetName) .. ' con ' .. GetStreetNameFromHashKey(crossingRoad)
     end
 
+    -- Prevenir modelos NULL
     if model == 'NULL' then model = GetDisplayNameFromVehicleModel(GetEntityModel(vehicle)) end
 
-    return { model = model, street = street, primary = primary, plate = plate }
+    return { model = model, street = street, color = color, plate = plate }
 end
 
 
 RegisterCommand("forzar", function(source, args, rawCommand)
     if not IsPedInAnyVehicle(PlayerPedId(), true) then return end
-    TriggerServerEvent('entornos:forzar', GetPlayerServerId(PlayerId()), vehicleData())
+    TriggerServerEvent('inf_entornos:forzar', GetPlayerServerId(PlayerId()), vehicleData())
 end, false)
 
 RegisterCommand("vel", function(source, args, rawCommand)
     if not IsPedInAnyVehicle(PlayerPedId(), true) then return end
     local velocity = round(GetEntitySpeed(GetVehiclePedIsIn(GetPlayerPed(PlayerId()), false)) * 3.6, 0)
-    TriggerServerEvent('entornos:vel', GetPlayerServerId(PlayerId()), vehicleData(), velocity)
+    TriggerServerEvent('inf_entornos:vel', GetPlayerServerId(PlayerId()), vehicleData(), velocity)
 end, false)
 
 RegisterCommand('entorno', function(source, args, rawCommand)
@@ -71,7 +76,7 @@ RegisterCommand('entorno', function(source, args, rawCommand)
   local streetName, crossingRoad = GetStreetNameAtCoord(playerCoords.x, playerCoords.y, playerCoords.z)
   local street = GetStreetNameFromHashKey(streetName)
   if crossingRoad ~= 0 then street = GetStreetNameFromHashKey(streetName) .. ' con ' .. GetStreetNameFromHashKey(crossingRoad) end
-  TriggerServerEvent('entornos:entorno', GetPlayerServerId(PlayerId()), street, args)
+  TriggerServerEvent('inf_entornos:entorno', GetPlayerServerId(PlayerId()), street, args)
 end, false)
 
 RegisterCommand('socorro', function(source, args, rawCommand)
@@ -79,13 +84,13 @@ RegisterCommand('socorro', function(source, args, rawCommand)
   local streetName, crossingRoad = GetStreetNameAtCoord(playerCoords.x, playerCoords.y, playerCoords.z)
   local street = GetStreetNameFromHashKey(streetName)
   if crossingRoad ~= 0 then street = GetStreetNameFromHashKey(streetName) .. ' con ' .. GetStreetNameFromHashKey(crossingRoad) end
-  TriggerServerEvent('entornos:socorro', GetPlayerServerId(PlayerId()), street, args)
+  TriggerServerEvent('inf_entornos:socorro', GetPlayerServerId(PlayerId()), street, args)
 end, false)
 
 --
 
-RegisterNetEvent("entornos:near")
-AddEventHandler("entornos:near", function(coords, playerCoords, msg)
+RegisterNetEvent("inf_entornos:near")
+AddEventHandler("inf_entornos:near", function(coords, playerCoords, msg)
   if #(coords.xy - playerCoords.xy) < 20 then
     TriggerEvent('chat:addMessage', {
       color = { 135, 135, 135 },
@@ -96,8 +101,8 @@ AddEventHandler("entornos:near", function(coords, playerCoords, msg)
 end)
 
 -- LSPD
-RegisterNetEvent('entornos:notifications')
-AddEventHandler('entornos:notifications', function(title, cod, source, msg, loc)
+RegisterNetEvent('inf_entornos:notifications')
+AddEventHandler('inf_entornos:notifications', function(title, cod, source, msg, loc)
     local data = {["code"] = cod, ["title"] = title, ['id'] = source, ['msg'] = msg, ["loc"] = loc}
     SendNUIMessage({
         info = data
@@ -112,8 +117,8 @@ AddEventHandler('entornos:notifications', function(title, cod, source, msg, loc)
 end)
 
 -- EMS
-RegisterNetEvent('entornos:notificationsEms')
-AddEventHandler('entornos:notificationsEms', function(title, cod, source, msg, loc)
+RegisterNetEvent('inf_entornos:notificationsEms')
+AddEventHandler('inf_entornos:notificationsEms', function(title, cod, source, msg, loc)
     local data = {["code"] = cod, ["title"] = title, ['id'] = source, ['msg'] = msg, ["loc"] = loc}
     SendNUIMessage({
         info = data
@@ -130,7 +135,7 @@ end)
 -- Shots Fired!
 Citizen.CreateThread(function()
     while true do
-        Citizen.Wait(20)
+        Citizen.Wait(10)
         local playerPed = PlayerPedId()
         local shot = IsPedShooting(playerPed)
         local silence = IsPedCurrentWeaponSilenced(playerPed)
@@ -145,16 +150,19 @@ Citizen.CreateThread(function()
                 if crossingRoad ~= 0 then
                   street = GetStreetNameFromHashKey(streetName) .. ' con ' .. GetStreetNameFromHashKey(crossingRoad)
                 end
-                TriggerServerEvent('entornos:gunshotInProgress', street, GetPlayerServerId(PlayerId()), GetPedType(GetPlayerPed(GetPlayerFromServerId(PlayerId()))))
+
+                local weapon = GetWeapontypeModel(GetSelectedPedWeapon(playerPed))
+
+                TriggerServerEvent('inf_entornos:gunshotInProgress', street, weapon, GetPlayerServerId(PlayerId()), GetPedType(GetPlayerPed(GetPlayerFromServerId(PlayerId()))))
                 Citizen.Wait(5000)
             end
         end
     end
 end)
 
-RegisterNetEvent('entornos:LSPDMarker')
-AddEventHandler('entornos:LSPDMarker', function(targetCoords, id, sprite)
-    PlayerData = ESX.GetPlayerData()
+RegisterNetEvent('inf_entornos:LSPDMarker')
+AddEventHandler('inf_entornos:LSPDMarker', function(targetCoords, id, sprite)
+    local PlayerData = ESX.GetPlayerData()
     if PlayerData.job.name == 'police' and sprite ~= 353 then
         showBlip(sprite, targetCoords)
     elseif PlayerData.job.name == 'ambulance' and sprite == 353 then
@@ -195,7 +203,7 @@ end
 
 function removeBlip(blip)
     Citizen.CreateThread(function()
-        Citizen.Wait(10000)
+        Citizen.Wait(30000)
         RemoveBlip(blip)
         LatestBlip = nil
     end)
