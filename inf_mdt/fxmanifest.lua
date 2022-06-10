@@ -4,19 +4,17 @@ game 'gta5'
 shared_script 'config.lua'
 
 client_scripts {
-	'lang.lua',
-	'client.lua'
+	'client/client.lua',
+	'client/utils.lua'
 }
 server_scripts {
 	'@mysql-async/lib/MySQL.lua',
-	'server.lua'
+	'serveR/server.lua'
 }
 
-ui_page 'ui/index.html'
+ui_page 'web/build/index.html'
 
 files {
-	'ui/index.html',
-	'ui/css/*.css',
-	'ui/js/*.js',
-	'ui/img/*.png',
+	'web/build/index.html',
+	'web/build/**/*'
 }
