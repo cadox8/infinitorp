@@ -1,0 +1,15 @@
+{
+  "mysql": {
+    "host": "localhost",
+    "port": 3306,
+    "username": "root",
+    "password": "",
+    "database": "fivem"
+  },
+  "auth": {
+    "allowed_job_types": ["police"]
+  },
+  "client": {
+    "keybind": "k"
+  }
+}
